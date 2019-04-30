@@ -54,6 +54,7 @@ def create_train_data(X_train, y_train, labels):
 		elif y_train[k]==labels[1]:
 			X_train_binary.append(X_train[k])
 			y_train_binary.append(-1)
+	print("Number of train set samples for binary case :",len(X_train_binary))
 	return X_train_binary, y_train_binary
 	
 def create_test_data(X_test, y_test, labels):
@@ -66,27 +67,32 @@ def create_test_data(X_test, y_test, labels):
 		elif y_test[j]==labels[1]:
 			X_test_binary.append(X_test[j])
 			y_test_binary.append(-1)
+	print("Number of test set samples for binary case :",len(X_test_binary))
 	return X_test_binary, y_test_binary
 
 def fit(X_train_binary, y_train_binary):
 	w=pegasos(X_train_binary,y_train_binary,6000)
 	return w	
-
+	
+def test(X_test_binary, y_test_binary):
+	correct=0
+	for k in range(0,len(y_test_binary)):
+		if np.dot(w,X_test_binary[k])<0 and y_test_binary[k]<0:
+			correct+=1
+		elif np.dot(w,X_test_binary[k])>0 and y_test_binary[k]>0:
+			correct+=1
+	acc = (correct*1.0/len(y_test_binary))
+	return acc
 
 X_train, y_train = load_mnist('../fashionmnist/', kind='train')
 X_test, y_test = load_mnist('../fashionmnist/', kind='t10k')
 
-X_train_binary, y_train_binary = create_train_data(X_train, y_train)
-X_test_binary, y_test_binary = create_test_data(X_test, y_test)
+X_train_binary, y_train_binary = create_train_data(X_train, y_train, [1,2])
+X_test_binary, y_test_binary = create_test_data(X_test, y_test, [1,2])
 
-print("Number of train set samples for binary case :",len(X_train_binary))
-print("Number of test set samples for binary case :",len(X_test_binary))
+
+
 w = fit(X_train_binary, y_train_binary)
-correct=0
-for k in range(0,len(y_test_binary)):
-	if np.dot(w,X_test_binary[k])<0 and y_test_binary[k]<0:
-		correct+=1
-	elif np.dot(w,X_test_binary[k])>0 and y_test_binary[k]>0:
-		correct+=1
+acc = test(X_test_binary, y_test_binary)
 #print(correct)
-print("Test accuracy :",(correct*1.0/len(y_test_binary)))
+print("Test accuracy :", acc)
