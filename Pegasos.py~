@@ -48,7 +48,7 @@ def pegasos(data,labels,T,lamda=1.0):
 
 
 X_train, y_train = load_mnist('../fashionmnist/', kind='train')
-X_test, y_test = load_mnist('../fashionmnist/', kind='t10k')
+X_test, y_test = load_mnist('..fashionmnist/', kind='t10k')
 
 X_train_binary=[]
 y_train_binary=[]
