@@ -74,7 +74,7 @@ def fit(X_train_binary, y_train_binary):
 	w=pegasos(X_train_binary,y_train_binary,6000)
 	return w	
 	
-def test(X_test_binary, y_test_binary):
+def test(X_test_binary, y_test_binary,w):
 	correct=0
 	for k in range(0,len(y_test_binary)):
 		if np.dot(w,X_test_binary[k])<0 and y_test_binary[k]<0:
@@ -93,6 +93,6 @@ X_test_binary, y_test_binary = create_test_data(X_test, y_test, [1,2])
 
 
 w = fit(X_train_binary, y_train_binary)
-acc = test(X_test_binary, y_test_binary)
+acc = test(X_test_binary, y_test_binary,w)
 #print(correct)
 print("Test accuracy :", acc)

@@ -25,25 +25,27 @@ def load_mnist(path, kind='train'):
     return images, labels
 
 def k1(v1,v2,degree):
-	op = np.dotproduct(v1, v2)
-	op=np.pow(op,degree)
+	op = np.dot(v1, v2)
+	op=np.power(op,degree)
 	return op
 	
 def mercer_pegasos(kernel,data,labels,T, lamda=1.0):
-	alpha = np.zeros((T))
 	S=len(data)
+	alpha = np.zeros((S))
 	for k in range(1,T):
 		it = random.randrange(S)
-		sum=0
+		sm=0
 		for j in range(0,S):
-			sm+=alpha[j]*labels[it]*k1(data[it],data[j])
+			sm+=alpha[j]*labels[it]*k1(data[it],data[j],2)
 		if labels[it]*(1/(k*lamda))*sm <1:
 			alpha[it] = alpha[it]+1
+	# for k in range(0,S):
+		
 	return alpha
 
 
-X_train, y_train = load_mnist('../fashionmnist/', kind='train')
-X_test, y_test = load_mnist('../fashionmnist/', kind='t10k')
+X_train, y_train = load_mnist('/Users/sangeethreddy/Desktop/Fashion_Mnist/', kind='train')
+X_test, y_test = load_mnist('/Users/sangeethreddy/Desktop/Fashion_Mnist/', kind='t10k')
 
 X_train_binary=[]
 y_train_binary=[]
@@ -65,3 +67,14 @@ for j in range(0,y_test.shape[0]):
 		y_test_binary.append(-1)
 print("Number of train set samples for binary case :",len(X_train_binary))
 print("Number of test set samples for binary case :",len(X_test_binary))
+
+alp = mercer_pegasos('k',X_train_binary,y_train_binary,100)
+
+correct=0
+	for k in range(0,len(y_test_binary)):
+		if np.dot(w,X_test_binary[k])<0 and y_test_binary[k]<0:
+			correct+=1
+		elif np.dot(w,X_test_binary[k])>0 and y_test_binary[k]>0:
+			correct+=1
+	acc = (correct*1.0/len(y_test_binary))
+
