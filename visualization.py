@@ -21,12 +21,11 @@ rd_tm = [1.08,2.18,4.33,7.20,9.45,11.36]
 hm_tm = [0.38,1.22,2.53,4.0,11,13.4]
 ln_tm = [0.1,0.1,0.1,0.1,0.1,0.1]
 
-plt.plot(itr, rd_acc_2,'r',label='gamma 2')
-plt.plot(itr, rd_acc_3,'g',label='gamma 3')
-plt.plot(itr, rd_acc_4, 'b', label='gamma 4')
-plt.plot(itr, rd_acc_5, 'y', label='gamma 5')
+plt.plot(itr, rd_tm,'r',label='Radial basis')
+plt.plot(itr, hm_tm,'g',label='Homogenious polynomial')
+plt.plot(itr, ln_tm, 'b', label='Linear')
 plt.xlabel("Number of Iterations")
 plt.ylabel("Accuracy")
-plt.title("Iterations vs Accuracy for various gamma Of radial basis")
+plt.title("Iterations vs Accuracy for various kernels of SVM")
 plt.legend()
-plt.savefig("iter_vs_acc_rd.png")
+plt.savefig("iter_vs_acc.png")
