@@ -1,5 +1,6 @@
 import numpy as np
 import sys, pdb, random
+from tqdm import tqdm
 
 def load_mnist(path, kind='train'):
     import os
@@ -30,18 +31,21 @@ def k1(v1,v2,degree):
 	return op
 	
 def mercer_pegasos(kernel,data,labels,T, lamda=1.0):
+	print("Learning alpha's, please wait....")
 	S=len(data)
 	alpha = np.zeros((S))
-	for k in range(1,T):
+	w = np.zeros((data[0].shape[0]))
+	for k in tqdm(range(1,T)):
 		it = random.randrange(S)
 		sm=0
 		for j in range(0,S):
 			sm+=alpha[j]*labels[it]*k1(data[it],data[j],2)
 		if labels[it]*(1/(k*lamda))*sm <1:
 			alpha[it] = alpha[it]+1
-	# for k in range(0,S):
-		
-	return alpha
+
+	for k in range(0,S):
+		w += alpha[k]*labels[k]*data[k]
+	return w
 
 
 X_train, y_train = load_mnist('/Users/sangeethreddy/Desktop/Fashion_Mnist/', kind='train')
@@ -68,13 +72,15 @@ for j in range(0,y_test.shape[0]):
 print("Number of train set samples for binary case :",len(X_train_binary))
 print("Number of test set samples for binary case :",len(X_test_binary))
 
-alp = mercer_pegasos('k',X_train_binary,y_train_binary,100)
+w = mercer_pegasos('k',X_train_binary,y_train_binary,10000)
 
 correct=0
-	for k in range(0,len(y_test_binary)):
-		if np.dot(w,X_test_binary[k])<0 and y_test_binary[k]<0:
-			correct+=1
-		elif np.dot(w,X_test_binary[k])>0 and y_test_binary[k]>0:
-			correct+=1
-	acc = (correct*1.0/len(y_test_binary))
+for k in range(0,len(y_test_binary)):
+	if np.dot(w,X_test_binary[k])<0 and y_test_binary[k]<0:
+		correct+=1
+	elif np.dot(w,X_test_binary[k])>0 and y_test_binary[k]>0:
+		correct+=1
+acc = (correct*1.0/len(y_test_binary))
+print("test acc :",acc)
+
 
