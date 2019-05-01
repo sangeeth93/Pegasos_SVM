@@ -1,13 +1,9 @@
 import numpy as np
-import random, math
+import random, math, sys, os
 from tqdm import tqdm
 
 def load_mnist(path, kind='train'):
-    import os
-    import gzip
-    import numpy as np
-
-    """Load MNIST data from `path`"""
+	#load data from given ubyte format
     labels_path = os.path.join(path,
                                '%s-labels-idx1-ubyte'
                                % kind)
@@ -26,6 +22,7 @@ def load_mnist(path, kind='train'):
     return images, labels
 
 def kernel_f(k,v1,v2,degree):
+	#implementation of kernels
 	if k == 'homogenious':
 		op = np.dot(v1, v2)
 		op=np.power(op,degree)
@@ -36,11 +33,13 @@ def kernel_f(k,v1,v2,degree):
 		return op
 
 def loss(w,x,y):
+	#loss for linear SVM
 	op = y*np.dot(w,x)
 	return op
 	
 def mercer_pegasos(kernel,data,labels,T, deg, lamda=1.0):
 	if kernel=='linear':
+		#Linear implementation of Pegasos SVM
 		print("Linear Kernel with {} iterations".format(T))
 		S = len(data)
 		w = np.zeros((data[0].shape[0]))
@@ -51,10 +50,12 @@ def mercer_pegasos(kernel,data,labels,T, deg, lamda=1.0):
 				w1 = ((1-step*lamda)*w)+step*data[i]*labels[i]
 			elif loss(w,data[i],labels[i])>=1:
 				w1 = ((1-step*lamda)*w)
-			tt = min(1,(1/np.sqrt(lamda)/np.linalg.norm(w1)))*w1
+			tt = min(1,((1/np.sqrt(lamda)/np.linalg.norm(w1))))*w1 #weight update per each sample
+			w=tt
 		return tt
 	else:
 		print("Kernel SVM, with {} kernel, {} degree, {} iterations. Learning alpha's, please wait....".format(kernel,deg,T))
+		#Kernel SVM implemetation
 		S=len(data)
 		alpha = np.zeros((S))
 		w = np.zeros((data[0].shape[0]))
@@ -64,13 +65,14 @@ def mercer_pegasos(kernel,data,labels,T, deg, lamda=1.0):
 			for j in range(0,S):
 				sm+=alpha[j]*labels[it]*kernel_f(kernel,data[it],data[j],deg)
 			if labels[it]*(1/(k*lamda))*sm <1:
-				alpha[it] = alpha[it]+1
+				alpha[it] = alpha[it]+1 #Update date of alpha vaules
 
 		for k in range(0,S):
-			w += alpha[k]*labels[k]*data[k]
+			w += alpha[k]*labels[k]*data[k] #Converting alpha's to weights for inference
 		return w
 
 def get_data(path,binary):
+	#conversion of data from multi labels to -1 and +1 labels for two classes (1 and 2)
 	X_train, y_train = load_mnist(path, kind='train')
 	X_test, y_test = load_mnist(path, kind='t10k')
 	if not binary:
@@ -106,20 +108,33 @@ def test_acc(X_test_binary,y_test_binary,w):
 		elif np.dot(w,X_test_binary[k])>0 and y_test_binary[k]>0:
 			correct+=1
 	return (correct*1.0/len(y_test_binary))
-def run_expts():
+
+def run_expts(arg):
 	X_train_binary,y_train_binary,X_test_binary,y_test_binary = get_data('/Users/sangeethreddy/Desktop/Fashion_Mnist/',True)
 	kernels_list = ['radial','homogenious']
 	degree_list = [2,3,4,5]
 	iter_list = [500,1000,2000,3000,4000,5000]
 	linear_itr_list = [500,1000,2000,3000,5000,7000,10000]
-	for itr in linear_itr_list:
-		w = mercer_pegasos('linear',X_train_binary,y_train_binary, itr, 2)
+	if arg=='all':
+		for itr in linear_itr_list:
+			w = mercer_pegasos('linear',X_train_binary,y_train_binary, itr, 2)
+			print("test acc :",test_acc(X_test_binary,y_test_binary,w))
+		for krnl in kernels_list:
+			for dgree in degree_list:
+				for itr in iter_list:
+					w = mercer_pegasos(krnl,X_train_binary,y_train_binary, itr, dgree)
+					print("test acc :",test_acc(X_test_binary,y_test_binary,w))
+	elif arg=='linear':
+		w = mercer_pegasos('linear',X_train_binary,y_train_binary, 6000, 2)
 		print("test acc :",test_acc(X_test_binary,y_test_binary,w))
-	for krnl in kernels_list:
-		for dgree in degree_list:
-			for itr in iter_list:
-				w = mercer_pegasos(krnl,X_train_binary,y_train_binary, itr, dgree)
-				print("test acc :",test_acc(X_test_binary,y_test_binary,w))
+	elif arg=='radial':
+		w = mercer_pegasos('radial',X_train_binary,y_train_binary, 500, 2)
+		print("test acc :",test_acc(X_test_binary,y_test_binary,w))
+	elif arg=='homogenious':
+		w = mercer_pegasos('homogenious',X_train_binary,y_train_binary, 500, 2)
+		print("test acc :",test_acc(X_test_binary,y_test_binary,w))
 
-run_expts()
-
+# run_expts('linear') #Runs Pegasos linear SVM
+# run_expts('radial') #Runs Kernelized SVM with radial basis as kernel
+run_expts('homogenious') #Runs kernelized SVM with homogenious polynomial as kernel
+# run_expts('all') #Runs all possible combinations of kernels, parameters and iterations for analysis

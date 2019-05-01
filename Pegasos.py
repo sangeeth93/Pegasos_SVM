@@ -38,7 +38,7 @@ def pegasos(data,labels,T,lamda=1.0):
 			w1 = ((1-step*lamda)*w)+step*data[i]*labels[i]
 		elif loss(w,data[i],labels[i])>=1:
 			w1 = ((1-step*lamda)*w)
-		tt = (1/np.sqrt(lamda)/np.linalg.norm(w1))
+		tt = ((1/np.sqrt(lamda))/np.linalg.norm(w1))
 		w1 = min(1,tt)*w1
 		w = w1
 	return w
