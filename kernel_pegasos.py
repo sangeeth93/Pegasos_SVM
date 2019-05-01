@@ -43,7 +43,7 @@ def mercer_pegasos(kernel,data,labels,T, deg, lamda=1.0):
 		print("Linear Kernel with {} iterations".format(T))
 		S = len(data)
 		w = np.zeros((data[0].shape[0]))
-		for k in range(1,T):
+		for k in tqdm(range(1,T)):
 			i = random.randrange(S)
 			step = 1/(k*lamda)
 			if loss(w,data[i],labels[i])<1:
@@ -119,6 +119,7 @@ def run_expts(arg):
 		for itr in linear_itr_list:
 			w = mercer_pegasos('linear',X_train_binary,y_train_binary, itr, 2)
 			print("test acc :",test_acc(X_test_binary,y_test_binary,w))
+		sys.exit()
 		for krnl in kernels_list:
 			for dgree in degree_list:
 				for itr in iter_list:
@@ -136,5 +137,5 @@ def run_expts(arg):
 
 # run_expts('linear') #Runs Pegasos linear SVM
 # run_expts('radial') #Runs Kernelized SVM with radial basis as kernel
-run_expts('homogenious') #Runs kernelized SVM with homogenious polynomial as kernel
-# run_expts('all') #Runs all possible combinations of kernels, parameters and iterations for analysis
+# run_expts('homogenious') #Runs kernelized SVM with homogenious polynomial as kernel
+run_expts('all') #Runs all possible combinations of kernels, parameters and iterations for analysis
