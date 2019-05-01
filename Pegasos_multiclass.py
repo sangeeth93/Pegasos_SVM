@@ -175,7 +175,7 @@ pred12 = predict_class(pred12, [1,2])
 pred23 = predict_label(test,w23)
 pred23 = predict_class(pred23, [2,3])
 
-pred13 = predict_label(test,w13)
+pred13 = predict_label(test, w13)
 pred13 = predict_class(pred13, [1,3])
 
 final_pred = voting(pred12, pred23, pred13, [1,2,3])
