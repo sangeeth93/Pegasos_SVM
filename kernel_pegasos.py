@@ -110,7 +110,7 @@ def test_acc(X_test_binary,y_test_binary,w):
 	return (correct*1.0/len(y_test_binary))
 
 def run_expts(arg):
-	X_train_binary,y_train_binary,X_test_binary,y_test_binary = get_data('/Users/sangeethreddy/Desktop/Fashion_Mnist/',True)
+	X_train_binary,y_train_binary,X_test_binary,y_test_binary = get_data('fashionmnist/',True)
 	kernels_list = ['radial','homogenious']
 	degree_list = [2,3,4,5]
 	iter_list = [500,1000,2000,3000,4000,5000]

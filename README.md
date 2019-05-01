@@ -17,16 +17,19 @@ Packages required to install the software
 
 You have to download the dataset Fashion MNIST dataset from original repo [link](https://github.com/zalandoresearch/fashion-mnist)
 
-And then edit the path of the parameter in get_data function with the absolute folder of the downloaded data.
+The data must be stored in this folder inside a folder named 'fashionmnist'
 
 Then you can run the code by executing below command from the home folder of this clone repo.
-
+These codes are for linear SVM, kernel SVM and the linear SVM for multi class classification.
 ```
+python Pegasos_linear.py
 python kernel_pegasos.py
+python Pegasos_multiclass.py
 ```
 
 You may find commented code at the end of python file, try each of them to see the outputs and the change of parameters.
 
+The link to some screen cast videos is: https://drive.google.com/drive/folders/1EDKXfjsm80JLrMUMEOeTZ5KVNdIfVd9Y?usp=sharing
 
 * Built on Mac with Mojave and tested on Ubuntu 14.04
 

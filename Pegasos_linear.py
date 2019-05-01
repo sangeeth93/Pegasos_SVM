@@ -84,8 +84,8 @@ def test(X_test_binary, y_test_binary, w):
 	acc = (correct*1.0/len(y_test_binary))
 	return acc
 
-X_train, y_train = load_mnist('../fashionmnist/', kind='train')
-X_test, y_test = load_mnist('../fashionmnist/', kind='t10k')
+X_train, y_train = load_mnist('fashionmnist/', kind='train')
+X_test, y_test = load_mnist('fashionmnist/', kind='t10k')
 
 X_train_binary, y_train_binary = create_train_data(X_train, y_train, [1,2])
 X_test_binary, y_test_binary = create_test_data(X_test, y_test, [1,2])

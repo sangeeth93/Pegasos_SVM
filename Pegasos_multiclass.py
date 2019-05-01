@@ -133,8 +133,8 @@ def calc_acc(pred, gt):
 		
 
 
-X_train, y_train = load_mnist('../fashionmnist/', kind='train')
-X_test, y_test = load_mnist('../fashionmnist/', kind='t10k')
+X_train, y_train = load_mnist('fashionmnist/', kind='train')
+X_test, y_test = load_mnist('fashionmnist/', kind='t10k')
 
 
 # THIS IS FOR CLASS 1 vs 2
