@@ -36,4 +36,4 @@ You may find commented code at the end of python file, try each of them to see t
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is only for educational / research purpose.
